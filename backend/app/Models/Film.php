@@ -14,4 +14,8 @@ class Film extends Model
         'genre',
         'age'
     ];
+
+    public function genres(){
+        return $this->belongsToMany(Genre::class);
+    }
 }

@@ -34,6 +34,26 @@ class AuthController extends Controller
         ], 201);
     }
 
+    public function admin(Request $request){
+        $request->validate([
+            'username' => 'required|string|unique:users',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|min:6',
+        ]);
+
+        $admin = User::create([
+            'username' => $request->username,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'admin' => true
+        ]);
+
+        return response()->json([
+            'message' => 'Admin Berhasil dibuat',
+            'data' => $admin
+        ]);
+    }
+
     public function login(Request $request)
     {
         $request->validate([
