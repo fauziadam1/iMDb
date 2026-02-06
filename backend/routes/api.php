@@ -8,7 +8,10 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::put('/edit/{id}', [AuthController::class, 'update']);
     Route::get('/logout/{id}', [AuthController::class, 'logout']);
 
+    Route::get('/genres', [GenresController::class, 'index']);
     Route::post('/genre', [GenresController::class, 'store']);
+    Route::put('/genre/{id}', [GenresController::class, 'update']);
+    Route::delete('/genre/{id}', [GenresController::class, 'delete']);
 });
 
 Route::post('/users', [AuthController::class, 'index']);
