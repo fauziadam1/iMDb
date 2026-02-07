@@ -20,6 +20,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::delete('/film/{id}', [FilmController::class, 'delete']);
 
     Route::post('/comment', [CommentController::class, 'store']);
+    Route::delete('/comment/{id}', [CommentController::class, 'delete']);
 
     Route::post('/cast', [CastingController::class, 'store']);
     Route::put('/cast/{id}', [CastingController::class, 'update']);

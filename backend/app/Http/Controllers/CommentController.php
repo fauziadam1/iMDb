@@ -7,18 +7,13 @@ use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {
-    public function index(Request $request){
-        if ($request->user()->admin != true) {
-            return response()->json([
-                'message' => 'Anda tidak punya akses'
-            ]);
-        }
-
+    public function index(Request $request)
+    {
         return response()->json(Comment::all());
     }
 
-    public function store(Request $request){
-    
+    public function store(Request $request)
+    {
         $request->validate([
             'film_id' => 'required|exists:films,id',
             'comment' => 'required'
@@ -30,18 +25,32 @@ class CommentController extends Controller
             'user_id' => $request->user()->id,
         ]);
 
-        return response()->json([$comment]);
+        if (!$request->user()) {
+            return response()->json([
+                'message' => 'Login terlebih dahulu'
+            ]);
+        };
+
+        return response()->json([
+            'message' => 'Komentar berhasil dikirim',
+            'data' => $comment
+        ]);
     }
 
-    public function delete(Request $request, $id){
-        $comment = Comment::findOrFail();
+    public function delete(Request $request, $id)
+    {
+        $comment = Comment::findOrFail($id);
 
-        if (!$request->user()->admin && $request->user()->id !== $comment->user_id ) {
+        if (!$request->user()->admin && $request->user()->id !== $comment->user_id) {
             return response()->json([
                 'message' => 'Anda tidak punya akses'
             ]);
         };
 
         $comment->delete();
+
+        return response()->json([
+            'message' => 'Komentar berhasil dihapus',
+        ]. 201);
     }
 }
