@@ -15,11 +15,12 @@ return new class extends Migration
             $table->id();
             $table->string('title', 255);
             $table->string('trailer')->nullable();
-            $table->string('image');
+            $table->text('description');
+            $table->string('image')->nullable();
             $table->enum('age_rating', ['SU', 'BO', '13+', '17+', 'R', 'D']);
             $table->timestamps();
             $table->softDeletes();
-            
+
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             });
     }
