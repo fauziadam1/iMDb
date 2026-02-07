@@ -31,7 +31,7 @@ class GenresController extends Controller
         return response()->json([
             'message' => 'Genre Berhasil dibuat',
             'data' => $genre
-        ]);
+        ], 201);
     }
 
     public function update(Request $request, $id)
@@ -41,7 +41,7 @@ class GenresController extends Controller
         if ($request->user()->admin != true) {
             return response()->json([
                 'message' => 'Akses ditolak. Anda bukan admin'
-            ]);
+            ], 403);
         }
 
 
@@ -58,7 +58,7 @@ class GenresController extends Controller
         return response()->json([
             'message' => 'Genre berhasil diupdate',
             'data' => $genre
-        ]);
+        ], 200);
     }
 
     public function delete(Request $request, $id)
@@ -66,7 +66,7 @@ class GenresController extends Controller
         if ($request->user()->admin !== true) {
             return response()->json([
                 'message' => 'Anda tidak punya akses'
-            ]);
+            ], 403);
         }
 
         $genre = Genre::findOrFail($id);
@@ -75,6 +75,6 @@ class GenresController extends Controller
 
         return response()->json([
             'message' => 'Genre berhasil dihapus'
-        ]);
+        ], 204);
     }
 }

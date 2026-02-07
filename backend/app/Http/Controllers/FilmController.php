@@ -103,7 +103,7 @@ class FilmController extends Controller
         return response()->json([
             'message' => 'Film berhasil diupdate',
             'data' => $film->load(['genres', 'castings'])
-        ], 201);
+        ], 200);
     }
 
     public function delete(Request $request, $id)
@@ -120,6 +120,6 @@ class FilmController extends Controller
 
         return response()->json([
             'message' => 'Film berhasil dihapus'
-        ]);
+        ], 201);
     }
 }

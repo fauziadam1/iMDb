@@ -34,7 +34,7 @@ class CommentController extends Controller
         return response()->json([
             'message' => 'Komentar berhasil dikirim',
             'data' => $comment
-        ]);
+        ], 201);
     }
 
     public function delete(Request $request, $id)
@@ -44,13 +44,13 @@ class CommentController extends Controller
         if (!$request->user()->admin && $request->user()->id !== $comment->user_id) {
             return response()->json([
                 'message' => 'Anda tidak punya akses'
-            ]);
+            ], 403);
         };
 
         $comment->delete();
 
         return response()->json([
             'message' => 'Komentar berhasil dihapus',
-        ]. 201);
+        ]. 204);
     }
 }

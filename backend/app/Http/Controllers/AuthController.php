@@ -51,7 +51,7 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'Admin Berhasil dibuat',
             'data' => $admin
-        ]);
+        ], 201);
     }
 
     public function login(Request $request)
@@ -74,7 +74,7 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'Login Berhasil',
             'token' => $token
-        ]);
+        ], 200);
     }
 
     public function update(Request $request)
@@ -101,7 +101,7 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'Berhasil diupdate',
             'data' => $user
-        ]);
+        ], 200);
     }
 
     public function logout(Request $request)
@@ -110,6 +110,6 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'Berhasil Logout',
-        ]);
+        ], 204);
     }
 }

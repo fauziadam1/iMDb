@@ -6,6 +6,7 @@ use App\Http\Controllers\CastingController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FilmController;
 use App\Http\Controllers\GenresController;
+use App\Http\Controllers\RatingController;
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::put('/edit/{id}', [AuthController::class, 'update']);
@@ -25,6 +26,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/cast', [CastingController::class, 'store']);
     Route::put('/cast/{id}', [CastingController::class, 'update']);
     Route::delete('/cast/{id}', [CastingController::class, 'delete']);
+
+    Route::post('/rating', [RatingController::class, 'store']);
 });
 
 Route::post('/register', [AuthController::class, 'store']);

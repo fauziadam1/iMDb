@@ -16,7 +16,8 @@ class Film extends Model
         'age_rating',
         'user_id',
         'genre',
-        'casting'
+        'casting',
+        'rating'
     ];
 
     public function genres()
@@ -27,6 +28,11 @@ class Film extends Model
     public function castings()
     {
         return $this->belongsToMany(Casting::class);
+    }
+
+    public function ratings()
+    {
+        return $this->belongsToMany(Rating::class);
     }
 
     public function users()

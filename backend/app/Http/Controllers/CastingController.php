@@ -17,7 +17,7 @@ class CastingController extends Controller
         if ($request->user()->admin != true) {
             return response()->json([
                 'message' => 'Akses ditolak. Anda bukan admin'
-            ]);
+            ], 403);
         };
 
         $request->validate([
@@ -41,7 +41,7 @@ class CastingController extends Controller
         if ($request->user()->admin !== true) {
             return response()->json([
                 'message' => 'Anda tidak punya akses'
-            ]);
+            ], 403);
         }
 
         $request->validate([
@@ -57,7 +57,7 @@ class CastingController extends Controller
         return response()->json([
             'message' => 'Casting berhasil diupdate',
             'data' => $cast
-        ]);
+        ], 200);
     }
 
     public function delete(Request $request, $id)
@@ -65,7 +65,7 @@ class CastingController extends Controller
         if ($request->user()->admin !== true) {
             return response()->json([
                 'message' => 'Anda tidak punya akses'
-            ]);
+            ], 403);
         }
 
         $cast = Casting::findOrFail($id);
@@ -74,6 +74,6 @@ class CastingController extends Controller
 
         return response()->json([
             'message' => 'Casting berhasil dihapus'
-        ]);
+        ], 204);
     }
 }
