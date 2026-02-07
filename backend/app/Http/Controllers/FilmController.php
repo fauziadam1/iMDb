@@ -25,7 +25,11 @@ class FilmController extends Controller
             'trailer' => 'nullable|string',
             'description' => 'required|string',
             'image' => 'nullable|string',
+            'release_year' => 'nullable|integer|digits:4|min:1800|max:' . date('Y'),
+            'duration' => 'nullable|integer|min:1|max:600',
             'age_rating' => 'required|in:SU,BO,13+,17+,R,D',
+            'casting' => 'nullable|array',
+            'casting.*' => 'exists:castings,id',
             'genre' => 'nullable|array',
             'genre.*' => 'exists:genres,id'
         ]);
@@ -37,6 +41,8 @@ class FilmController extends Controller
             'description' => $request->description,
             'age_rating' => $request->age_rating,
             'image' => $request->image,
+            'release_year' => $request->release_year,
+            'duration' => $request->duration,
             'user_id' => $request->user()->id,
         ]);
 
@@ -44,15 +50,19 @@ class FilmController extends Controller
             $film->genres()->attach($request->genre);
         }
 
+        if ($request->filled('casting')) {
+            $film->castings()->attach($request->casting);
+        }
+
         return response()->json([
             'message' => 'Film berhasil dibuat',
-            'data' => $film->load('genres')
+            'data' => $film->load(['genres', 'castings'])
         ], 201);
     }
 
     public function update(Request $request, $id)
     {
-        if ($request->user() || $request->user()->admin !== true) {
+        if ($request->user()->admin !== true) {
             return response()->json([
                 'message' => 'Akses ditolak. Anda bukan admin'
             ], 403);
@@ -66,6 +76,8 @@ class FilmController extends Controller
             'description' => 'sometimes|required|string',
             'image' => 'sometimes|nullable|string',
             'age_rating' => 'sometimes|required|in:SU,BO,13+,17+,R,D',
+            'casting' => 'sometimes|nullable|array',
+            'casting.*' => 'exists:castings,id',
             'genre' => 'sometimes|nullable|array',
             'genre.*' => 'exists:genres,id'
         ]);
@@ -82,17 +94,21 @@ class FilmController extends Controller
             $film->genres()->sync($request->genre ?? []);
         }
 
+        if ($request->has('casting')) {
+            $film->castings()->sync($request->casting ?? []);
+        }
+
         $film->update($data);
 
         return response()->json([
             'message' => 'Film berhasil diupdate',
-            'data' => $film->load('genres')
-        ]);
+            'data' => $film->load(['genres', 'castings'])
+        ], 201);
     }
 
     public function delete(Request $request, $id)
     {
-        if ($request->user() || $request->user()->admin != true) {
+        if ($request->user()->admin != true) {
             return response()->json([
                 'message' => 'Akses ditolak. Anda bukan admin'
             ], 403);

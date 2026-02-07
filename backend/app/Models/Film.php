@@ -10,15 +10,23 @@ class Film extends Model
         'title',
         'trailer',
         'image',
+        'release_year',
+        'duration',
         'description',
         'age_rating',
         'user_id',
-        'genre'
+        'genre',
+        'casting'
     ];
 
     public function genres()
     {
         return $this->belongsToMany(Genre::class);
+    }
+
+    public function castings()
+    {
+        return $this->belongsToMany(Casting::class);
     }
 
     public function users()

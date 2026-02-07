@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Genre;
+use App\Models\Casting;
 use Illuminate\Http\Request;
 
-class GenresController extends Controller
+class CastingController extends Controller
 {
     public function index()
     {
-        return response()->json(Genre::all());
+        return response()->json(Casting::all());
     }
 
     public function store(Request $request)
@@ -17,47 +17,46 @@ class GenresController extends Controller
         if ($request->user()->admin != true) {
             return response()->json([
                 'message' => 'Akses ditolak. Anda bukan admin'
-            ], 403);
+            ]);
         };
 
         $request->validate([
-            'name' => 'required|string|unique:genres,name'
+            'name' => 'required|string|unique:castings,name',
         ]);
 
-        $genre = Genre::create([
-            'name' => $request->name
+        $cast = Casting::create([
+            'name' => $request->name,
         ]);
 
         return response()->json([
-            'message' => 'Genre Berhasil dibuat',
-            'data' => $genre
-        ]);
+            'message' => 'Casting berhasil dibuat',
+            'data' => $cast
+        ], 201);
     }
 
     public function update(Request $request, $id)
     {
-        $genre = Genre::findOrFail($id);
+        $cast = Casting::findOrFail($id);
 
-        if ($request->user()->admin != true) {
+        if ($request->user()->admin !== true) {
             return response()->json([
-                'message' => 'Akses ditolak. Anda bukan admin'
+                'message' => 'Anda tidak punya akses'
             ]);
         }
 
-
         $request->validate([
-            'name' => 'sometimes|required|string|unique:genres,name'
+            'name' => 'sometimes|required|string|unique:castings,name'
         ]);
 
         $data = $request->only([
             'name'
         ]);
 
-        $genre->update($data);
+        $cast->update($data);
 
         return response()->json([
-            'message' => 'Genre berhasil diupdate',
-            'data' => $genre
+            'message' => 'Casting berhasil diupdate',
+            'data' => $cast
         ]);
     }
 
@@ -69,12 +68,12 @@ class GenresController extends Controller
             ]);
         }
 
-        $genre = Genre::findOrFail($id);
+        $cast = Casting::findOrFail($id);
 
-        $genre->delete();
+        $cast->delete();
 
         return response()->json([
-            'message' => 'Genre berhasil dihapus'
+            'message' => 'Casting berhasil dihapus'
         ]);
     }
 }

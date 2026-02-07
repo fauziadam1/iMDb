@@ -14,12 +14,13 @@ return new class extends Migration
         Schema::create('films', function (Blueprint $table) {
             $table->id();
             $table->string('title', 255);
-            $table->string('trailer')->nullable();
             $table->text('description');
+            $table->string('trailer')->nullable();
             $table->string('image')->nullable();
+            $table->year('release_year')->nullable();
+            $table->integer('duration')->nullable();
             $table->enum('age_rating', ['SU', 'BO', '13+', '17+', 'R', 'D']);
             $table->timestamps();
-            $table->softDeletes();
 
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             });
