@@ -34,7 +34,8 @@ class AuthController extends Controller
         ], 201);
     }
 
-    public function admin(Request $request){
+    public function admin(Request $request)
+    {
         $request->validate([
             'username' => 'required|string|unique:users',
             'email' => 'required|email|unique:users',
@@ -51,6 +52,28 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'Admin Berhasil dibuat',
             'data' => $admin
+        ], 201);
+    }
+
+
+    public function author(Request $request)
+    {
+        $request->validate([
+            'username' => 'required|string|unique:users',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|min:6',
+        ]);
+
+        $author = User::create([
+            'username' => $request->username,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'author' => true
+        ]);
+
+        return response()->json([
+            'message' => 'Author Berhasil dibuat',
+            'data' => $author
         ], 201);
     }
 
