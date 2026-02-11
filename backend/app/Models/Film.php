@@ -20,6 +20,11 @@ class Film extends Model
         'rating'
     ];
 
+    protected $casts = [
+        'release_year' => 'integer',
+        'duration' => 'integer',
+    ];
+
     public function genres()
     {
         return $this->belongsToMany(Genre::class);

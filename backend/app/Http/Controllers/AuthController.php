@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
@@ -14,12 +15,24 @@ class AuthController extends Controller
         return response()->json(User::all());
     }
 
+    public function me(Request $request)
+    {
+        $user = $request->user();
+
+        return response()->json([
+            'id' => $user->id,
+            'username' => $user->username,
+            'email' => $user->email,
+            'role' => $user->role
+        ], 200);
+    }
+
     public function store(Request $request)
     {
         $request->validate([
-            'username' => 'required|string|unique:users',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:6',
+            'username' => 'required|string|unique:users,username',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:6|confirmed',
         ]);
 
         $user = User::create([
@@ -28,9 +41,17 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
+        Auth::login($user);
+
         return response()->json([
             'message' => 'Berhasil Registrasi',
-            'data' => $user
+            'data' => $user,
+            'user' => [
+                'id' => $user->id,
+                'username' => $user->username,
+                'email' => $user->email,
+                'role' => $user->role
+            ]
         ], 201);
     }
 
@@ -79,9 +100,11 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
+        $user = $request->user();
+
         $request->validate([
             'username' => 'required|string',
-            'password' => 'required',
+            'password' => 'required|string',
         ]);
 
         $user = User::where('username', $request->username)->first();
@@ -92,11 +115,16 @@ class AuthController extends Controller
             ]);
         }
 
-        $token = $user->createToken('token')->plainTextToken;
+        Auth::login($user);
 
         return response()->json([
             'message' => 'Login Berhasil',
-            'token' => $token
+            'user' => [
+                'id' => $user->id,
+                'username' => $user->username,
+                'email' => $user->email,
+                'role' => $user->role
+            ]
         ], 200);
     }
 
@@ -129,10 +157,13 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
+        Auth::guard('web')->logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
         return response()->json([
-            'message' => 'Berhasil Logout',
-        ], 204);
+            'message' => 'Logout Berhasil'
+        ]);
     }
 }

@@ -48,4 +48,11 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function getRoleAttribute()
+    {
+        if ($this->admin) return 'admin';
+        if ($this->admin) return 'admin';
+        return 'user';
+    }
 }

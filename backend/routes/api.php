@@ -9,8 +9,9 @@ use App\Http\Controllers\GenresController;
 use App\Http\Controllers\RatingController;
 
 Route::middleware(['auth:sanctum'])->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/user', [AuthController::class, 'me']);
     Route::put('/edit/{id}', [AuthController::class, 'update']);
-    Route::get('/logout/{id}', [AuthController::class, 'logout']);
 
     Route::post('/genre', [GenresController::class, 'store']);
     Route::put('/genre/{id}', [GenresController::class, 'update']);
@@ -30,9 +31,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/rating', [RatingController::class, 'store']);
 });
 
+Route::middleware(['web'])->group(function () {});
+
+Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'store']);
 Route::post('/register/admin', [AuthController::class, 'admin']);
-Route::post('/login', [AuthController::class, 'login']);
 
 Route::get('/films', [FilmController::class, 'index']);
 Route::get('/users', [AuthController::class, 'index']);

@@ -24,7 +24,7 @@ class FilmController extends Controller
             'title' => 'required|string|max:255',
             'trailer' => 'nullable|string',
             'description' => 'required|string',
-            'image' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:10240',
             'release_year' => 'nullable|integer|digits:4|min:1800|max:' . date('Y'),
             'duration' => 'nullable|integer|min:1|max:600',
             'age_rating' => 'required|in:SU,BO,13+,17+,R,D',
@@ -34,15 +34,18 @@ class FilmController extends Controller
             'genre.*' => 'exists:genres,id'
         ]);
 
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('films', 'public');
+        }
 
         $film = Film::create([
             'title' => $request->title,
             'trailer' => $request->trailer,
             'description' => $request->description,
             'age_rating' => $request->age_rating,
-            'image' => $request->image,
-            'release_year' => $request->release_year,
-            'duration' => $request->duration,
+            'image' => $imagePath,
+            'release_year' => $request->release_year ? (int)$request->release_year : null,
+            'duration' => $request->duration ? (int)$request->duration : null,
             'user_id' => $request->user()->id,
         ]);
 
