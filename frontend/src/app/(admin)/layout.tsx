@@ -4,6 +4,7 @@ import { useAuthUser } from "@/lib/auth";
 import { PropsWithChildren } from "react";
 import { notFound } from "next/navigation";
 import { Spinner } from "@/components/ui/spinner";
+import { Header } from "@/components/header";
 
 export default function AdminLayout({ children }: PropsWithChildren) {
   const { user, isLoading } = useAuthUser();
@@ -19,5 +20,10 @@ export default function AdminLayout({ children }: PropsWithChildren) {
       </div>
     );
 
-  return children;
+  return (
+    <>
+      <Header />
+      {children}
+    </>
+  );
 }

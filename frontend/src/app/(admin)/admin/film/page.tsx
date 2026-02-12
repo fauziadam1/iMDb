@@ -1,16 +1,10 @@
 "use client";
 
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { api } from "@/lib/axios";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useState } from "react";
+import { DataTable } from "./data-table";
+import { columns } from "./columns-film";
 
 type Genre = {
   id: number;
@@ -36,7 +30,7 @@ type Film = {
   castings: Casting[];
 };
 
-export default function FilmList() {
+export default function AdminFilmPage() {
   const [films, setFilms] = useState<Film[]>([]);
 
   useEffect(() => {
@@ -47,19 +41,12 @@ export default function FilmList() {
       } catch {}
     };
     fetchFilms();
-  });
+  }, []);
 
   return (
-    <div>
-      {films.map((film) => {
-        return (
-          <Card key={film.id}>
-            <CardContent>
-              <img src={film.image} />
-            </CardContent>
-          </Card>
-        );
-      })}
+    <div className="px-10 py-10 space-y-4">
+      <h1 className="text-2xl font-semibold">Data Films</h1>
+      <DataTable columns={columns} data={films} />
     </div>
   );
 }

@@ -88,19 +88,20 @@ export default function HeaderUser({
 
   const handleDelete = async (id: number) => {
     setLoadingDeleteId(id);
-    try {
-      await api.delete(`/api/genre/${id}`);
-
-      toast.success("Genre berhasil dihapus");
-      setGenres((prev) => prev.filter((genre) => genre.id !== id));
-      setLoadingDeleteId(null);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
-      const message =
-        err?.response?.message ?? err.message ?? "Something wrong";
-      toast.error(message);
-      setLoadingDeleteId(null);
-    }
+    useEffect(() => {
+      const fetchGenres = async () => {
+        try {
+          const res = await api.delete(`api/genres/${id}`);
+          setGenres((prev) => prev.filter((genre) => genre.id !== id));
+          toast.success("Genre berhasil dihapus");
+        } catch (err: any) {
+          const message =
+            err?.response?.message ?? err.message ?? "Delete failed";
+          toast.error(message);
+        }
+      };
+      fetchGenres();
+    });
   };
 
   return (
@@ -137,11 +138,11 @@ export default function HeaderUser({
                       <Clapperboard />
                       <Dialog>
                         <DialogTrigger>Films</DialogTrigger>
-                        <DialogContent>
+                        <DialogContent className="sm:max-w-3xl">
                           <DialogHeader>
                             <DialogTitle>Add Film</DialogTitle>
                           </DialogHeader>
-                          <FilmForm />
+                          <FilmForm/>
                         </DialogContent>
                       </Dialog>
                     </DropdownMenuItem>
@@ -187,10 +188,10 @@ export default function HeaderUser({
                       See Data
                     </DropdownMenuLabel>
                     <DropdownMenuItem>
-                      <Link href={"/"}>Films</Link>
+                      <Link href={"/admin/film"}>Films</Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem>
-                      <Link href={"/"}>Celebs</Link>
+                      <Link href={"/admin/cast"}>Celebs</Link>
                     </DropdownMenuItem>
                     <DropdownMenuSub>
                       <DropdownMenuSubTrigger>Genres</DropdownMenuSubTrigger>

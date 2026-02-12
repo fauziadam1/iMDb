@@ -86,32 +86,32 @@ export default function FilmForm() {
   const onSubmit = async (data: FormSchema) => {
     setIsLoading(true);
     try {
-const formData = new FormData();
+      const formData = new FormData();
 
-formData.append("title", data.title);
-formData.append("trailer", data.trailer);
-formData.append("description", data.description);
-formData.append("release_year", data.release_year);
-formData.append("duration", data.duration);
-formData.append("age_rating", data.age_rating);
+      formData.append("title", data.title);
+      formData.append("trailer", data.trailer);
+      formData.append("description", data.description);
+      formData.append("release_year", data.release_year);
+      formData.append("duration", data.duration);
+      formData.append("age_rating", data.age_rating);
 
-if (data.image) {
-  formData.append("image", data.image);
-}
+      if (data.image) {
+        formData.append("image", data.image);
+      }
 
-data.genre.forEach((id) => {
-  formData.append("genre[]", id.toString());
-});
+      data.genre.forEach((id) => {
+        formData.append("genre[]", id.toString());
+      });
 
-data.casting.forEach((id) => {
-  formData.append("casting[]", id.toString());
-});
+      data.casting.forEach((id) => {
+        formData.append("casting[]", id.toString());
+      });
 
-await api.post("/api/film", formData, {
-  headers: {
-    "Content-Type": "multipart/form-data",
-  },
-});
+      await api.post("/api/film", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       toast.success("Film berhasil dibuat");
       setIsLoading(false);
@@ -194,304 +194,327 @@ await api.post("/api/film", formData, {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className="space-y-5">
-          <FormField
-            control={form.control}
-            name="title"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Title</FormLabel>
-                <FormControl>
-                  <Input
-                    onKeyDown={(e) => e.stopPropagation()}
-                    placeholder="The Notebook"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="description"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Description</FormLabel>
-                <FormControl>
-                  <Textarea
-                    onKeyDown={(e) => e.stopPropagation()}
-                    placeholder="Description"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="trailer"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Trailer</FormLabel>
-                <FormControl>
-                  <Input
-                    type="text"
-                    placeholder="https://www.youtube.com/..."
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="image"
-            render={() => (
-              <FormItem>
-                <FormLabel>Cover</FormLabel>
-                {!imagePreview ? (
-                  <div
-                    className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer hover:bg-muted/50 transition-colors ${
-                      isDragging ? "border-primary bg-primary/10" : ""
-                    }`}
-                    onClick={() => fileInputRef.current?.click()}
-                    onDragOver={handleDragOver}
-                    onDragLeave={handleDragLeave}
-                    onDrop={handleDrop}
-                  >
-                    <ImageIcon className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
-                    <p className="text-sm font-medium mb-1">
-                      Click to upload or drag and drop
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      PNG, JPG, or JPEG (max 10MB)
-                    </p>
+          <div className="flex flex-1 gap-5">
+            <div>
+              <FormField
+                control={form.control}
+                name="image"
+                render={() => (
+                  <FormItem>
+                    <FormLabel>Cover</FormLabel>
+                    {!imagePreview ? (
+                      <div
+                        className={` border-2 border-dashed py-40 w-70 rounded-lg p-6 text-center cursor-pointer hover:bg-muted/50 transition-colors ${
+                          isDragging ? "border-primary bg-primary/10" : ""
+                        }`}
+                        onClick={() => fileInputRef.current?.click()}
+                        onDragOver={handleDragOver}
+                        onDragLeave={handleDragLeave}
+                        onDrop={handleDrop}
+                      >
+                        <div className="">
+                          <ImageIcon className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
+                          <p className="text-sm font-medium mb-1">
+                            Click to upload or drag and drop
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            PNG, JPG, or JPEG (max 5MB)
+                          </p>
+                        </div>
+                        <FormControl>
+                          <Input
+                            ref={fileInputRef}
+                            type="file"
+                            accept="image/*"
+                            onChange={handleFileChange}
+                            className="hidden"
+                          />
+                        </FormControl>
+                      </div>
+                    ) : (
+                      <div className="relative">
+                        <div className="aspect-auto w-70 overflow-hidden rounded-lg">
+                          <Image
+                            src={imagePreview || "/placeholder.svg?"}
+                            width={1920}
+                            height={1080}
+                            alt="Cover Preview"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="icon"
+                          className="absolute top-2 right-2 h-8 w-8 rounded-full"
+                          onClick={handleRemoveImage}
+                        >
+                          <XIcon className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    )}
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="space-y-5 w-full">
+              <FormField
+                control={form.control}
+                name="title"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Title</FormLabel>
                     <FormControl>
                       <Input
-                        ref={fileInputRef}
-                        type="file"
-                        accept="image/*"
-                        onChange={handleFileChange}
-                        className="hidden"
+                        onKeyDown={(e) => e.stopPropagation()}
+                        placeholder="The Notebook"
+                        {...field}
                       />
                     </FormControl>
-                  </div>
-                ) : (
-                  <div className="relative">
-                    <div className="aspect-square w-full overflow-hidden rounded-lg">
-                      <Image
-                        src={imagePreview || "/placeholder.svg?"}
-                        width={1920}
-                        height={1080}
-                        alt="Cover Preview"
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <Button
-                      type="button"
-                      variant="destructive"
-                      size="icon"
-                      className="absolute top-2 right-2 h-8 w-8 rounded-full"
-                      onClick={handleRemoveImage}
-                    >
-                      <XIcon className="h-4 w-4" />
-                    </Button>
-                  </div>
+                    <FormMessage />
+                  </FormItem>
                 )}
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="release_year"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Release Year</FormLabel>
-                <FormControl>
-                  <Input type="number" placeholder="2026" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="duration"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Duration</FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    placeholder="minute, ex: 90"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="age_rating"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Age Rating</FormLabel>
-                <FormControl>
-                  <Input
-                    type="text"
-                    placeholder="SU, BO, 13+, 17+, R, D"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="genre"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Genre</FormLabel>
-                <div>
-                  {field.value?.map((id) => {
-                    const g = genres.find((genre) => genre.id === id);
-                    if (!g) return null;
+              />
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Description</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        onKeyDown={(e) => e.stopPropagation()}
+                        placeholder="Description"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="trailer"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Trailer</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="text"
+                        placeholder="https://www.youtube.com/..."
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-                    return (
-                      <Badge
-                        key={id}
-                        variant="secondary"
-                        className="flex items-center gap-1 pr-1"
-                      >
-                        {g.name}
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          className="h-4 w-4 p-0 hover:bg-transparent"
-                          onClick={() => {
-                            field.onChange(
-                              field.value?.filter((genreId) => genreId !== id),
-                            );
-                          }}
-                        >
-                          <XIcon className="h-3 w-3" />
-                        </Button>
-                      </Badge>
-                    );
-                  })}
+              <FormField
+                control={form.control}
+                name="release_year"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Release Year</FormLabel>
+                    <FormControl>
+                      <Input type="number" placeholder="2026" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="duration"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Duration</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        placeholder="minute, ex: 90"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="age_rating"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Age Rating</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="text"
+                        placeholder="SU, BO, 13+, 17+, R, D"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="genre"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Genre</FormLabel>
+                    <div className="flex items-center gap-1">
+                      {field.value?.map((id) => {
+                        const g = genres.find((genre) => genre.id === id);
+                        if (!g) return null;
 
-                  <Button
-                    onClick={() => setOpenGenre(true)}
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                  >
-                    + Add
-                  </Button>
-                  <CommandDialog open={isOpenGenre} onOpenChange={setOpenGenre}>
-                    <Command>
-                      <CommandInput placeholder="Search genre..." />
-                      <CommandEmpty>No genre found.</CommandEmpty>
-
-                      <CommandList>
-                        {genres
-                          .filter((g) => !field.value?.includes(g.id))
-                          .map((g) => (
-                            <CommandItem
-                              key={g.id}
-                              onSelect={() => {
-                                field.onChange([...(field.value ?? []), g.id]);
+                        return (
+                          <Badge
+                            key={id}
+                            variant="secondary"
+                            className="flex items-center gap-1 pr-1"
+                          >
+                            {g.name}
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              className="h-4 w-4 p-0 hover:bg-transparent"
+                              onClick={() => {
+                                field.onChange(
+                                  field.value?.filter(
+                                    (genreId) => genreId !== id,
+                                  ),
+                                );
                               }}
                             >
-                              {g.name}
-                            </CommandItem>
-                          ))}
-                      </CommandList>
-                    </Command>
-                  </CommandDialog>
-                </div>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="casting"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Celebrity</FormLabel>
-                <div>
-                  {field.value?.map((id) => {
-                    const c = casts.find((cast) => cast.id === id);
-                    if (!c) return null;
+                              <XIcon className="h-3 w-3" />
+                            </Button>
+                          </Badge>
+                        );
+                      })}
 
-                    return (
-                      <Badge
-                        key={id}
-                        variant="secondary"
-                        className="flex items-center gap-1 pr-1"
+                      <Button
+                        onClick={() => setOpenGenre(true)}
+                        type="button"
+                        variant="outline"
+                        size="xs"
                       >
-                        {c.name}
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          className="h-4 w-4 p-0 hover:bg-transparent"
-                          onClick={() => {
-                            field.onChange(
-                              field.value?.filter((castId) => castId !== id),
-                            );
-                          }}
-                        >
-                          <XIcon className="h-3 w-3" />
-                        </Button>
-                      </Badge>
-                    );
-                  })}
+                        + Add
+                      </Button>
+                      <CommandDialog
+                        open={isOpenGenre}
+                        onOpenChange={setOpenGenre}
+                      >
+                        <Command>
+                          <CommandInput placeholder="Search genre..." />
+                          <CommandEmpty>No genre found.</CommandEmpty>
 
-                  <Button
-                    onClick={() => setOpenCast(true)}
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                  >
-                    + Add
-                  </Button>
-                  <CommandDialog open={isOpenCast} onOpenChange={setOpenCast}>
-                    <Command>
-                      <CommandInput placeholder="Search Celebrity..." />
-                      <CommandEmpty>No celebrity found.</CommandEmpty>
+                          <CommandList>
+                            {genres
+                              .filter((g) => !field.value?.includes(g.id))
+                              .map((g) => (
+                                <CommandItem
+                                  key={g.id}
+                                  onSelect={() => {
+                                    field.onChange([
+                                      ...(field.value ?? []),
+                                      g.id,
+                                    ]);
+                                  }}
+                                >
+                                  {g.name}
+                                </CommandItem>
+                              ))}
+                          </CommandList>
+                        </Command>
+                      </CommandDialog>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="casting"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Celebrity</FormLabel>
+                    <div className="flex items-center gap-1">
+                      {field.value?.map((id) => {
+                        const c = casts.find((cast) => cast.id === id);
+                        if (!c) return null;
 
-                      <CommandList>
-                        {casts
-                          .filter((c) => !field.value?.includes(c.id))
-                          .map((c) => (
-                            <CommandItem
-                              key={c.id}
-                              onSelect={() => {
-                                field.onChange([...(field.value ?? []), c.id]);
+                        return (
+                          <Badge
+                            key={id}
+                            variant="secondary"
+                            className="flex items-center gap-1 pr-1"
+                          >
+                            {c.name}
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              className="h-4 w-4 p-0 hover:bg-transparent"
+                              onClick={() => {
+                                field.onChange(
+                                  field.value?.filter(
+                                    (castId) => castId !== id,
+                                  ),
+                                );
                               }}
                             >
-                              {c.name}
-                            </CommandItem>
-                          ))}
-                      </CommandList>
-                    </Command>
-                  </CommandDialog>
-                </div>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button type="submit" disabled={form.formState.isSubmitted}>
-            Add
-          </Button>
+                              <XIcon className="h-3 w-3" />
+                            </Button>
+                          </Badge>
+                        );
+                      })}
+
+                      <Button
+                        onClick={() => setOpenCast(true)}
+                        type="button"
+                        variant="outline"
+                        size="xs"
+                      >
+                        + Add
+                      </Button>
+                      <CommandDialog
+                        open={isOpenCast}
+                        onOpenChange={setOpenCast}
+                      >
+                        <Command>
+                          <CommandInput placeholder="Search Celebrity..." />
+                          <CommandEmpty>No celebrity found.</CommandEmpty>
+
+                          <CommandList>
+                            {casts
+                              .filter((c) => !field.value?.includes(c.id))
+                              .map((c) => (
+                                <CommandItem
+                                  key={c.id}
+                                  onSelect={() => {
+                                    field.onChange([
+                                      ...(field.value ?? []),
+                                      c.id,
+                                    ]);
+                                  }}
+                                >
+                                  {c.name}
+                                </CommandItem>
+                              ))}
+                          </CommandList>
+                        </Command>
+                      </CommandDialog>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
+          <Button type="submit" className="w-full py-5 rounded-xl">Add</Button>
         </div>
       </form>
     </Form>

@@ -64,7 +64,7 @@ export default function CelebsForm() {
               <FormItem>
                 <FormLabel>Name</FormLabel>
                 <FormControl>
-                  <Input type="text" placeholder="Sydney Sweeney" {...field} />
+                  <Input type="text" onKeyDown={(e) => e.stopPropagation()} placeholder="Sydney Sweeney" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

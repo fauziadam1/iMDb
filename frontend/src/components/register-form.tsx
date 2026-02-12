@@ -1,6 +1,6 @@
 "use client";
 
-import z from "zod";
+import z, { set } from "zod";
 import { toast } from "sonner";
 import {
   Form,
@@ -10,9 +10,11 @@ import {
   FormMessage,
   FormField,
 } from "./ui/form";
-import { Input } from "./ui/input";
+import { useState } from "react";
 import { api } from "@/lib/axios";
+import { Input } from "./ui/input";
 import { Button } from "./ui/button";
+import { Spinner } from "./ui/spinner";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { PasswordInput } from "./ui/password-input";
@@ -21,6 +23,7 @@ import { PasswordValidation } from "@/lib/password-validation";
 
 export function RegisterForm() {
   const router = useRouter();
+  const [Loading, setLoading] = useState(false);
 
   const formSchema = z
     .object({
@@ -50,19 +53,22 @@ export function RegisterForm() {
   });
 
   const onSubmit = async (data: FormSchema) => {
+    setLoading(true);
     try {
       await api.get("/sanctum/csrf-cookie");
       await new Promise((resolve) => setTimeout(resolve, 100));
       await api.post("/api/register", data);
 
       toast.success("Registrasi berhasil");
+      setLoading(false);
       router.refresh();
-      router.push("/");
+      router.push("/login");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       const message =
         err?.respone?.data?.message ?? err.message ?? "Registration failed";
       toast.error(message);
+      setLoading(false);
     }
   };
 
@@ -136,10 +142,8 @@ export function RegisterForm() {
                   </FormItem>
                 )}
               />
-              <Button
-                type="submit"
-                disabled={form.formState.isSubmitting}
-              >
+              <Button type="submit" disabled={form.formState.isSubmitting}>
+                {Loading ? <Spinner /> : ""}
                 Register
               </Button>
             </div>

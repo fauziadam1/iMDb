@@ -11,10 +11,10 @@ export function Header() {
 
   return (
     <div className="flex items-center justify-center gap-5 py-4 border-b ">
-      <div className="-space-y-1">
+      <Link href={'/'} className="-space-y-1">
         <h1 className="text-xl font-bold">iMDb</h1>
         <p className="text-[10px] text-gray-500">kawe super</p>
-      </div>
+      </Link>
       <SearchBar />
       <div>
         {user ? (
