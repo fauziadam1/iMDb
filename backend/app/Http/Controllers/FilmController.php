@@ -9,7 +9,8 @@ class FilmController extends Controller
 {
     public function index()
     {
-        return response()->json(Film::all());
+        $film = Film::with(['genres', 'castings'])->get();
+        return response()->json($film);
     }
 
     public function store(Request $request)

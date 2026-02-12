@@ -25,6 +25,11 @@ class Film extends Model
         'duration' => 'integer',
     ];
 
+    public function getImageAttribute($value)
+    {
+        return $value ? asset('storage/' . $value) : null;
+    }
+
     public function genres()
     {
         return $this->belongsToMany(Genre::class);

@@ -9,7 +9,8 @@ class CastingController extends Controller
 {
     public function index()
     {
-        return response()->json(Casting::all());
+        $cast = Casting::with('films')->get();
+        return response()->json($cast);
     }
 
     public function store(Request $request)
@@ -18,7 +19,8 @@ class CastingController extends Controller
             return response()->json([
                 'message' => 'Akses ditolak. Anda bukan admin'
             ], 403);
-        };
+        }
+        ;
 
         $request->validate([
             'name' => 'required|string|unique:castings,name',
@@ -27,6 +29,10 @@ class CastingController extends Controller
         $cast = Casting::create([
             'name' => $request->name,
         ]);
+
+        if ($request->filled('film')) {
+            $cast->films()->attach($request->films);
+        }
 
         return response()->json([
             'message' => 'Casting berhasil dibuat',

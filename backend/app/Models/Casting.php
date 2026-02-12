@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Casting extends Model
 {
     protected $fillable = [
-        'name'
+        'name',
+        'films'
     ];
 
     public function films()
